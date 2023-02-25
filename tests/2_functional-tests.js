@@ -65,9 +65,13 @@ suite('Functional Tests', function () {
 const Browser = require('zombie');
 
 suite('Functional Tests with Zombie.js', function () {
-  this.timeout(5000);
 
-
+  Browser.site = 'http://localhost:3000/'; //set to local dev env
+  const browser = new Browser();
+  
+  suiteSetup(function(done) {
+    return browser.visit('/', done( ));
+  });
 
   suite('Headless browser', function () {
     test('should have a working "site" property', function() {
@@ -78,9 +82,21 @@ suite('Functional Tests with Zombie.js', function () {
   suite('"Famous Italian Explorers" form', function () {
     // #5
     test('Submit the surname "Colombo" in the HTML form', function (done) {
-      assert.fail();
+      browser
+      .fill('surname', 'Colombo')
+      .pressButton('submit', function(){
 
-      done();
+        // assert that status is OK 200
+        browser.assert.success();
+        // assert that the text inside the element 'span#name' is 'Marco'
+        browser.assert.text('span#name', 'Cristoforo');
+        // assert that the text inside the element 'span#surname' is 'Polo'
+        browser.assert.text('span#surname', 'Colombo');
+        // assert that the element(s) 'span#dates' exist and their count is 1
+        browser.assert.element('span#dates', 1);
+
+        done();   // It's an async test, so we have to call 'done()''
+      })
     });
     // #6
     test('Submit the surname "Vespucci" in the HTML form', function (done) {
