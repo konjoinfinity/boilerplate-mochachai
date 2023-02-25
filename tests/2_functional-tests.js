@@ -34,19 +34,31 @@ suite('Functional Tests', function () {
       chai
         .request(server)
         .put('/travellers')
-
+        .send({surname: "Colombo"})
         .end(function (err, res) {
-          assert.fail();
-
+          assert.equal(res.status, 200);
+          assert.equal(res.type, 'application/json', "res should be json");
+          assert.equal(res.body.name, 'Cristoforo', 'should respond with first name');
+          // Need to add response check
           done();
         });
     });
     // #4
     test('Send {surname: "da Verrazzano"}', function (done) {
-      assert.fail();
-
-      done();
+      chai
+        .request(server)
+        .put('/travellers')
+        .send({surname: "da Verrazzano"})
+        .end(function (err, res) {
+          assert.equal(res.status, 200);
+          assert.equal(res.type, 'application/json', "res should be json");
+          assert.equal(res.body.name, 'Giovanni', 'should respond with first name');
+          // Need to add response check
+          done();
+        });
     });
+
+
   });
 });
 
